@@ -1,37 +1,57 @@
 package kong
 
 import (
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
-// CallRequest ...
-func CallRequest(request string) (int, []byte) {
-
-	res, err := http.Get(request)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	body, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return res.StatusCode, body
+type ApiInfo struct {
+	Name string `json:"name"`
 }
 
-// Average ...
-func Average(xs []float64) float64 {
+type ApiInfoer interface {
+	GetApiInfo(string) (string, error)
+}
 
-	total := float64(0)
+type KongApiInfoer struct {
+}
 
-	for _, value := range xs {
-		total = total + value
+// CallRequest ...
+func (kg KongApiInfoer) GetApiInfo(name string) (string, error) {
+
+	apiUrl := fmt.Sprintf("http://localhost:8001/apis/%s", name)
+
+	response, err := http.Get(apiUrl)
+	if err != nil {
+		return "", err
 	}
 
-	return total / float64(len(xs))
+	defer response.Body.Close()
+
+	body, err := ioutil.ReadAll(response.Body)
+
+	if err != nil {
+		return "", err
+	}
+
+	fmt.Printf("%s", body)
+
+	apiInfo := new(ApiInfo)
+	json.Unmarshal(body, &apiInfo)
+
+	return apiInfo.Name, nil
+}
+
+// GetApiInfo ...
+func GetApiInfo(ai ApiInfoer, name string) (string, error) {
+
+	apiName, err := ai.GetApiInfo(name)
+
+	if err != nil {
+		return "", fmt.Errorf("Error query api : %s", err)
+	}
+	return apiName, nil
 
 }

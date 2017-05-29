@@ -7,11 +7,14 @@ import (
 
 // main ...
 func main() {
-	fmt.Printf("List all apis \n")
+	fmt.Printf("Request api \n")
 
-	status, output := kong.CallRequest("http://localhost:8001/apis")
+	kg := kong.KongApiInfoer{}
+	result, err := kong.GetApiInfo(kg, "catalog")
 
-	fmt.Printf("Code status %v \n", status)
-	fmt.Printf("Body %s \n", output)
+	fmt.Println("Response \n", result)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 }
