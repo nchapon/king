@@ -11,7 +11,7 @@ func main() {
 
 	status, output := kong.CallRequest("http://localhost:8001/apis")
 
-	fmt.Printf("Code Status %v \n", status)
+	fmt.Printf("Code status %v \n", status)
 	fmt.Printf("Body %s \n", output)
 
 }

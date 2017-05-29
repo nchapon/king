@@ -22,3 +22,16 @@ func CallRequest(request string) (int, []byte) {
 
 	return res.StatusCode, body
 }
+
+// Average ...
+func Average(xs []float64) float64 {
+
+	total := float64(0)
+
+	for _, value := range xs {
+		total = total + value
+	}
+
+	return total / float64(len(xs))
+
+}
