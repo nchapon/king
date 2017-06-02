@@ -12,7 +12,7 @@ func main() {
 	kg := kong.KongApiInfoer{}
 	result, err := kong.GetApiInfo(kg, "catalog")
 
-	fmt.Println("Response \n", result)
+	fmt.Println("Response :", result)
 	if err != nil {
 		fmt.Println(err)
 	}
